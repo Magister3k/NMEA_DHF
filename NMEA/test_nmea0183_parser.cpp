@@ -1,10 +1,10 @@
-#include "nmea_decoder.h"
+#include "nmea0183_parser.h"
 #include <iostream>
 
 int main() {
-    std::cout << "[TEST] ������������ �������������� ������ nmea_decoder..." << std::endl;
+    std::cout << "[TEST] ������������ �������������� ������ nmea0183_parser..." << std::endl;
 
-    NmeaMsgParser decoder;
+    Nmea0183Parser decoder;
 
     // �������� �� ������� ������ ����������
     decoder.SetOnHeaderParsed([](const NmeaHeaderInfo& header) {

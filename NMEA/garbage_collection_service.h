@@ -1,28 +1,28 @@
 ﻿#pragma once
 
-#include "nmea_processor.h"
+#include "net_processor.h"
 #include <thread>
 #include <atomic>
 #include <condition_variable>
 #include <memory>
 
 // Опережающее объявление, чтобы не раздувать инклуды в заголовке
-class Nmea450Decoder;
+class Nmea450Parser;
 
-class NmeaService : public NmeaProcessor {
+class GcService : public NetProcessor {
 public:
-    nmea_service();
-    ~nmea_service();
+    GcService();
+    ~GcService();
 
     // Запрет копирования семантики (RAII-поток должен быть уникальным)
-    nmea_service(const nmea_service&) = delete;
-    nmea_service& operator=(const nmea_service&) = delete;
+    GcService(const GcService&) = delete;
+    GcService& operator=(const GcService&) = delete;
 
     /**
      * @brief Запуск фонового низкоприоритетного потока очистки таймаутов
      * @param net_meta_decoder Указатель на декодер L5, чьи таймауты сборки предложений (g:) тоже нужно чистить
      */
-    void StartTimeoutCleaner(std::shared_ptr<Nmea450Decoder> net_meta_decoder = nullptr);
+    void StartTimeoutCleaner(std::shared_ptr<Nmea450Parser> net_meta_decoder = nullptr);
     
     /**
      * @brief Принудительный останов фонового потока (вызывается также автоматически в деструкторе)
@@ -40,5 +40,5 @@ private:
     std::condition_variable m_cv;
 
     // Слабая ссылка на декодер NMEA-450 для безопасной очистки его пула из фонового потока
-    std::shared_ptr<Nmea450Decoder> m_net_meta_decoder = nullptr;
+    std::shared_ptr<Nmea450Parser> m_net_meta_decoder = nullptr;
 };

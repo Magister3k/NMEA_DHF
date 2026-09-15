@@ -11,19 +11,19 @@ struct NmeaHeaderInfo {
     std::string msg_type;
 };
 
-class NmeaMsgParser {
+class Nmea0183Parser {
 public:
     // 
     using HeaderParsedCallback = std::function<void(const NmeaHeaderInfo&)>;
     using StandardMsgCallback = std::function<void(const std::string& talker, const std::string& type, const std::vector<std::string>& fields)>;
     using AisMsgCallback = std::function<void(const std::string& ais_payload)>;
 
-    NmeaMsgParser() = default;
-    ~NmeaMsgParser() = default;
+    Nmea0183Parser() = default;
+    ~Nmea0183Parser() = default;
 
     // 
-    NmeaMsgParser(const NmeaMsgParser&) = delete;
-    NmeaMsgParser& operator=(const NmeaMsgParser&) = delete;
+    Nmea0183Parser(const Nmea0183Parser&) = delete;
+    Nmea0183Parser& operator=(const Nmea0183Parser&) = delete;
 
     // 
     void SetOnHeaderParsed(HeaderParsedCallback cb);

@@ -9,7 +9,7 @@
 #define M_PI 3.14159265358979323846
 #endif
 
-class GeoParser {
+class GeoMsgParser {
 public:
     using Callback = std::function<void(const NmeaReport&)>;
     void SetOnReport(Callback cb) { m_cb = cb; }
@@ -36,7 +36,7 @@ public:
 private:
     Callback m_cb = nullptr;
 
-void GeoParser::ParseStandard(const std::string& type, const std::vector<std::string>& f, NmeaReport& r) {
+void GeoMsgParser::ParseStandard(const std::string& type, const std::vector<std::string>& f, NmeaReport& r) {
     r.is_ais = false;
     r.ais_msg_type = 0;
 

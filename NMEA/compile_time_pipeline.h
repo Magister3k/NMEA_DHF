@@ -8,10 +8,10 @@
 // ����������� ���������� ������ �������������� ��������� �������� AIS
 class AisDecoder;
 
-template <typename AisDecoder, typename GeoParser>
+template <typename AisDecoder, typename GeoMsgParser>
 class NmeaDecoder {
 public:
-    NmeaDecoder(AisDecoder& ais, GeoParser& geo) : m_ais(ais), m_geo(geo) {}
+    NmeaDecoder(AisDecoder& ais, GeoMsgParser& geo) : m_ais(ais), m_geo(geo) {}
 
     inline void ParseMsg(const std::string& msg) {
         if (msg.length() < 7) return;
@@ -54,5 +54,5 @@ private:
     }
 
     AisDecoder& m_ais;
-    GeoParser& m_geo;
+    GeoMsgParser& m_geo;
 };

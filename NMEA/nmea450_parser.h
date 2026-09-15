@@ -13,17 +13,17 @@ struct NmeaGroupAssembly {
     std::map<int, std::string> lines; // ����� ������ -> ���� NMEA
 };
 
-class Nmea450Decoder {
+class Nmea450Parser {
 public:
-    // ������� ��� �������� ���������� ������ � ��������� ������ (nmea_decoder)
+    // ������� ��� �������� ���������� ������ � ��������� ������ (nmea0183_parser)
     using MsgAssembledCallback = std::function<void(const std::string& clean_msg, const std::string& src)>;
 
-    Nmea450Decoder() = default;
-    ~Nmea450Decoder() = default;
+    Nmea450Parser() = default;
+    ~Nmea450Parser() = default;
 
     // ������ �����������
-    Nmea450Decoder(const Nmea450Decoder&) = delete;
-    Nmea450Decoder& operator=(const Nmea450Decoder&) = delete;
+    Nmea450Parser(const Nmea450Parser&) = delete;
+    Nmea450Parser& operator=(const Nmea450Parser&) = delete;
 
     // ����������� �������
     void SetOnMsgAssembled(MsgAssembledCallback cb);
@@ -37,7 +37,7 @@ public:
 
     /**
      * @brief ����� ������� ������������� ������������� ������� �� ��������.
-     *        ���������� ������� ������������� (nmea_service).
+    *        ���������� ������� ������������� (garbage_collection_service).
      */
     void CleanupTimeouts();
 

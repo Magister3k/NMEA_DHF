@@ -1,11 +1,11 @@
-#include "nmea450_decoder.h"
+#include "nmea450_parser.h"
 #include <iostream>
 #include <vector>
 
 int main() {
-    std::cout << "[TEST] ������������ �������������� ������ nmea450_decoder..." << std::endl;
+    std::cout << "[TEST] ������������ �������������� ������ nmea450_parser..." << std::endl;
 
-    Nmea450Decoder decoder;
+    Nmea450Parser decoder;
 
     // ������������� �� �������� ����� ��������� �����
     decoder.SetOnMsgAssembled([](const std::string& clean_msg, const std::string& src) {

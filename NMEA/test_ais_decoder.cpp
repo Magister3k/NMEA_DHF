@@ -43,7 +43,7 @@ int main() {
     decoder.DecodePayload(test_payload_pos);
 
     // --- ���� 2: �������� �������� ��������� ��� 5 (Static Data) ---
-    // � �������� ������� ��� ������ ���������� ��������� �� ���� ���������� � ������ nmea450_decoder
+    // � �������� ������� ��� ������ ���������� ��������� �� ���� ���������� � ������ nmea450_parser
     std::string test_payload_static = "538S`v024hBl0D`G220000000000000000000016000000000000000"; 
     std::cout << "\n[������ ����� 2: ������������� �������� � �����]" << std::endl;
     decoder.DecodePayload(test_payload_static);

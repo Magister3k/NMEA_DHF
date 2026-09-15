@@ -1,5 +1,5 @@
-﻿#include "nmea_service.h"
-#include "nmea450_decoder.h"
+﻿#include "garbage_collection_service.h"
+#include "nmea450_parser.h"
 
 #ifdef _WIN32
 #include <windows.h>
@@ -8,13 +8,13 @@
 #include <sys/resource.h>
 #endif
 
-nmea_service::nmea_service() {}
+GcService::GcService() {}
 
-nmea_service::~nmea_service() {
+GcService::~GcService() {
     StopTimeoutCleaner();
 }
 
-void nmea_service::StartTimeoutCleaner(std::shared_ptr<Nmea450Decoder> net_meta_decoder) {
+void GcService::StartTimeoutCleaner(std::shared_ptr<Nmea450Parser> net_meta_decoder) {
     std::lock_guard<std::mutex> lock(m_cv_mutex);
     if (m_cleaner_thread.joinable()) return; // Защита от повторного запуска потока
 
@@ -22,10 +22,10 @@ void nmea_service::StartTimeoutCleaner(std::shared_ptr<Nmea450Decoder> net_meta_
     m_net_meta_decoder = net_meta_decoder;
     m_shutdown_requested = false;
     
-    m_cleaner_thread = std::thread(&nmea_service::CleanerWorker, this);
+    m_cleaner_thread = std::thread(&GcService::CleanerWorker, this);
 }
 
-void nmea_service::StopTimeoutCleaner() {
+void GcService::StopTimeoutCleaner() {
     {
         std::lock_guard<std::mutex> lock(m_cv_mutex);
         m_shutdown_requested = true;
@@ -38,7 +38,7 @@ void nmea_service::StopTimeoutCleaner() {
     }
 }
 
-void nmea_service::CleanerWorker() {
+void GcService::CleanerWorker() {
     // 🧠 Сеньорское архитектурное решение: Адаптивное понижение приоритета фонового потока.
     // Гарантирует, что тяжелое сканирование хэш-таблиц никогда не создаст задержек (jitter)
     // для основных сетевых потоков, обрабатывающих прерывания сокетов на уровне ядра.
@@ -61,11 +61,11 @@ void nmea_service::CleanerWorker() {
             break; // Атомарный триггер сработал -> немедленно выходим из рабочего цикла
         }
 
-        // ШАГ 1: Очистка таймаутов транспортного уровня L4 (базовый класс nmea_processor).
+        // ШАГ 1: Очистка таймаутов транспортного уровня L4 (базовый класс net_processor).
         // Мьютекс внутри CleanupTimeouts заблокируется на микросекунды для удаления мертвых TCP-сессий.
         CleanupTimeouts();
 
-        // ШАГ 2: Агрегированная очистка таймаутов уровня сетевых метаданных L5 (nmea450_decoder).
+        // ШАГ 2: Агрегированная очистка таймаутов уровня сетевых метаданных L5 (nmea450_parser).
         // Если указатель на декодер был передан при инициализации, чистим его многострочные пулы (g: теги).
         if (m_net_meta_decoder) {
             m_net_meta_decoder->CleanupTimeouts();

@@ -1,0 +1,91 @@
+#include <string_view>
+
+// ===============================================
+// Функции получения описания полей 
+// ===============================================
+
+// Тип сообщения
+// Функция быстрого поиска описания по ключу
+[[nodiscard]] constexpr std::string_view get_ais_msg_type_descr(uint8_t key) noexcept {
+    // Лямбда-компаратор для бинарного поиска
+    auto it = std::lower_bound(MSG_TYPE_MAP.begin(), MSG_TYPE_MAP.end(), key,
+        [](const MsgTypeEntry& entry, uint8_t target_id) {
+            return entry.id < target_id;
+        });
+    // Если нашли точное совпадение ключа — возвращаем значение
+    if (it != MSG_TYPE_MAP.end() && it->id == key) {
+        return it->descr;
+    }    
+    return "неподдерживаемый или зарезервированный";
+}
+
+// Тип навигационного оборудования
+// Функция мгновенного получения описания по индексу
+[[nodiscard]] constexpr std::string_view get_ais_device_type_descr(uint8_t key) noexcept {
+    // Безопасно маскируем до 4 бит (индекс гарантированно будет в диапазоне 0-15)
+    return DEVICE_TYPE_ARR[key & 0x0F];
+}
+
+// Статус навигационного оборудования
+// Функция мгновенного получения описания по индексу
+[[nodiscard]] constexpr std::string_view get_ais_device_status_descr(uint8_t key) noexcept {
+    // Объединенная проверка: если под маской 0x3C получается 60, 
+    // значит исходное число гарантированно лежит в диапазоне 60-63
+    if ((key & 0x3C) == 60) { 
+        // Маска 0x03 забирает 2 младших бита (остаток 0, 1, 2 или 3) для индекса массива
+        return DEVICE_STATUS_ARR[key & 0x03]; 
+    }
+    return "исправно";
+}
+
+// Навигационный статус
+// Функция мгновенного получения описания по индексу
+[[nodiscard]] constexpr std::string_view get_ais_nav_status_descr(uint8_t key) noexcept {
+    // Безопасно маскируем до 4 бит (индекс гарантированно будет в диапазоне 0-15)
+    return NAV_STATUS_ARR[key & 0x0F];
+}
+
+// Тип судна
+// Функция быстрого бинарного поиска описания по ключу
+[[nodiscard]] constexpr std::string_view get_ais_ship_type_descr(uint8_t key) noexcept {
+    uint8_t target_id = key;
+    // Исключаем диапазон 1-9
+    if (key > 0 && key < 10 ) {
+        return "зарезервировано";
+    }
+    // Если код не входит в диапазоны исключений 0-9, 30-39 и 50-59, то ключ — это первая цифра числа (десятки)
+    if ((key > 9 && key < 30) ||
+        (key > 39 && key < 50) ||
+        (key > 59 && key < 100)) {
+        target_id = key / 10;
+    }
+    // Сверхбыстрый бинарный поиск по компактному массиву
+    auto it = std::lower_bound(SHIP_TYPE_MAP.begin(), SHIP_TYPE_MAP.end(), target_id,
+        [](const ShipTypeEntry& entry, uint8_t id) {
+            return entry.id < id;
+        });
+    // Если нашли точное совпадение ключа — возвращаем значение
+    if (it != SHIP_TYPE_MAP.end() && it->id == target_id) {
+        return it->descr;
+    }
+    return "";
+}
+
+// Характер перевозимого груза
+// Функция мгновенного получения описания по индексу
+[[nodiscard]] constexpr std::string_view get_ais_cargo_type_descr(uint8_t key) noexcept {
+    // Исключаем диапазоны 30-39 и 50-59
+    if ((key > 29 && key < 40) ||
+        (key > 49 && key < 60)) {
+        return "не применимо для данного типа судна";
+    }    
+    // Математически извлекаем последнюю цифру (гарантированный диапазон 0-9)
+    return CARGO_TYPES_ARR[key % 10];
+}
+
+// Точность позиционирования
+// Функция мгновенного получения описания по индексу
+[[nodiscard]] constexpr std::string_view get_ais_pos_accuracy_descr(uint8_t key) noexcept {
+    // Безопасно маскируем до 1 бита (индекс гарантированно будет 0 или 1)
+    return POSITION_ACCURACY_ARR[key & 0x01];
+}

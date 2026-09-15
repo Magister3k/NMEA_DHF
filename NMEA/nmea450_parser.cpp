@@ -1,10 +1,10 @@
-#include "nmea450_decoder.h"
+#include "nmea450_parser.h"
 #include <cstring>
 #include <sstream>
 
-void Nmea450Decoder::SetOnMsgAssembled(MsgAssembledCallback cb) { m_assembled_cb = cb; }
+void Nmea450Parser::SetOnMsgAssembled(MsgAssembledCallback cb) { m_assembled_cb = cb; }
 
-void Nmea450Decoder::ProcPacket(const uint8_t* payload, size_t len) {
+void Nmea450Parser::ProcPacket(const uint8_t* payload, size_t len) {
     if (len < 8) return;
 
     // 1. "UdPbC\0"
@@ -31,7 +31,7 @@ void Nmea450Decoder::ProcPacket(const uint8_t* payload, size_t len) {
     }
 }
 
-void Nmea450Decoder::HandleTagBlock(const std::string& tag_block, const std::string& nmea_msg) {
+void Nmea450Parser::HandleTagBlock(const std::string& tag_block, const std::string& nmea_msg) {
     size_t star_pos = tag_block.find('*');
     if (star_pos == std::string::npos) return;
 
@@ -99,7 +99,7 @@ void Nmea450Decoder::HandleTagBlock(const std::string& tag_block, const std::str
     }
 }
 
-void Nmea450Decoder::CleanupTimeouts() {
+void Nmea450Parser::CleanupTimeouts() {
     auto now = std::chrono::steady_clock::now();
     // 
     for (auto it = m_nmea_group_pool.begin(); it != m_nmea_group_pool.end();) {
@@ -111,7 +111,7 @@ void Nmea450Decoder::CleanupTimeouts() {
     }
 }
 
-std::vector<std::string> Nmea450Decoder::SplitStr(const std::string& str, char delimiter) const {
+std::vector<std::string> Nmea450Parser::SplitStr(const std::string& str, char delimiter) const {
     std::vector<std::string> tokens;
     std::string token;
     std::istringstream tokenStream(str);

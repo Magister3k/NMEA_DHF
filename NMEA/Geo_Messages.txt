@@ -1,1 +1,21 @@
-!AIVDM, !AIVDO, !B2VDM, !B2VDO, !BSVDM, !BSVDO, $BSADS, $GPGGA, $GPGLL, $GPGNS, $GPRMC, $PASHR,POS, $PFEC,TLL, $PFUGDP, $PFUGP,POS, $PFUGW, $PGHP, $PGRMF, $PLCICA,GGQ($GPLQ,GGQ), $PMRNT, $PMXMIT, $PMXS,CURSOR..., $PRAYA/$PRAYB, $PRBY($GBBLV), $PSBG,GAZ, $PTNL,GGK, $PTNL,PJK, $PTNL,VGK, $RATLL, $RATMM, $PFUG,LLQ
+NMEA:
+!AIVDM, !AIVDO, !B2VDM, !B2VDO, !BSVDM, !BSVDO, $BSADS, $G(P/N)GGA, $GPGLL, $GPGNS, $GPRMC, $PASHR,POS, $PFEC,TLL, $PFUGDP, $PFUGP,POS, $PFUGW, $PGHP, $PGRMF, $PLCICA,GGQ($GPLQ,GGQ), $PMRNT, $PMXMIT, $PMXS,CURSOR..., $PRAYA/$PRAYB, $PRBY($GBBLV), $PSBG,GAZ, $PTNL,GGK, $PTNL,PJK, $PTNL,VGK, $RATLL, $RATMM, $PFUG,LLQ
+
+---
+
+AIS:
+-Тип 4: Отчет базовой станции (Base Station Report) - передается береговой базовой станцией.
+
+1. Динамические отчеты судов класса А
+Тип 1: Отчет о местоположении (Position Report Class A) — регулярные данные о координатах судна.
+Тип 2: Отчет о местоположении (Assigned) — ответ судна на запрос базовой станции.
+Тип 3: Отчет о местоположении (Response to interrogation) — ответ судна на специальный опрос.
+Тип 11: Отчет о времени и местоположении (UTC and Position Report) - ответ судна на запрос о точном времени и координатах .
+
+2. Динамические отчеты судов класса Б
+Тип 18: Стандартный отчет о местоположении (Standard Class B Equipment Position Report) — используется коммерческими и прогулочными судами меньшего размера.
+Тип 19: Расширенный отчет о местоположении (Extended Class B Equipment Position Report).
+
+3. Специфические воздушные и спасательные средства
+-Тип 9: Стандартный отчет о местоположении для воздушных судов (Standard SAR Aircraft Position Report) — передается самолетами и вертолетами, участвующими в поисково-спасательных операциях (SAR).
+Тип 27: Позиционный отчет для спутникового приема (Long-Range AIS Broadcast message) — упрощенное сообщение, оптимизированное для улавливания орбитальными спутниками (содержит урезанную версию координат и ту же 6-битную временную метку).

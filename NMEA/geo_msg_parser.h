@@ -5,17 +5,17 @@
 #include <functional>
 #include "nmea_structures.h"
 
-class GeoParser {
+class GeoMsgParser {
 public:
     // ������ �������� ������ ��� ������ ���������� � ������-������ (Observer)
     using Callback = std::function<void(const NmeaReport&)>;
 
-    GeoParser() = default;
-    ~GeoParser() = default;
+    GeoMsgParser() = default;
+    ~GeoMsgParser() = default;
 
     // ������ ����������� � ����������� (RAII / ������ ��������� ������ ���� ����������)
-    GeoParser(const GeoParser&) = delete;
-    GeoParser& operator=(const GeoParser&) = delete;
+    GeoMsgParser(const GeoMsgParser&) = delete;
+    GeoMsgParser& operator=(const GeoMsgParser&) = delete;
 
     /**
      * @brief ����������� ��������� ����������� ��������������� ���-�������

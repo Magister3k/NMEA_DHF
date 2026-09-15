@@ -1,15 +1,15 @@
-﻿#include "nmea_processor.h"
+﻿#include "net_processor.h"
 
 constexpr size_t DDOS_PROTECTION_BUFFER_LIMIT = 4096; // 4Кб лимит на пачку без символа \n
 constexpr auto TCP_INACTIVITY_TIMEOUT = std::chrono::minutes(5);
 
-NmeaProcessor::NmeaProcessor() {}
+NetProcessor::NetProcessor() {}
 
-void NmeaProcessor::SetOnRawDataChunkReady(RawDataChunkCallback cb) {
+void NetProcessor::SetOnRawDataChunkReady(RawDataChunkCallback cb) {
     m_raw_chunk_cb = cb;
 }
 
-void NmeaProcessor::ProcUdpDatagram(const uint8_t* udp_payload, size_t udp_len) {
+void NetProcessor::ProcUdpDatagram(const uint8_t* udp_payload, size_t udp_len) {
     if (udp_len == 0 || !m_raw_chunk_cb) return;
 
     std::lock_guard<std::mutex> lock(m_mutex);
@@ -19,7 +19,7 @@ void NmeaProcessor::ProcUdpDatagram(const uint8_t* udp_payload, size_t udp_len) 
     m_raw_chunk_cb(udp_payload, udp_len);
 }
 
-void NmeaProcessor::ProcTcpSegment(uint32_t src_ip, uint32_t dst_ip, uint16_t src_port, uint16_t dst_port,
+void NetProcessor::ProcTcpSegment(uint32_t src_ip, uint32_t dst_ip, uint16_t src_port, uint16_t dst_port,
                                     const uint8_t* tcp_payload, size_t tcp_len) 
 {
     if (tcp_len == 0 || !m_raw_chunk_cb) return;
@@ -51,13 +51,13 @@ void NmeaProcessor::ProcTcpSegment(uint32_t src_ip, uint32_t dst_ip, uint16_t sr
     }
 }
 
-void NmeaProcessor::TerminateTcpSession(uint32_t src_ip, uint32_t dst_ip, uint16_t src_port, uint16_t dst_port) {
+void NetProcessor::TerminateTcpSession(uint32_t src_ip, uint32_t dst_ip, uint16_t src_port, uint16_t dst_port) {
     std::lock_guard<std::mutex> lock(m_mutex);
     TcpSessionKey key{ src_ip, dst_ip, src_port, dst_port };
     m_tcp_pool.erase(key);
 }
 
-void NmeaProcessor::CleanupTimeouts() {
+void NetProcessor::CleanupTimeouts() {
     std::lock_guard<std::mutex> lock(m_mutex);
     auto now = std::chrono::steady_clock::now();
 

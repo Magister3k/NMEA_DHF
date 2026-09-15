@@ -1,11 +1,11 @@
-#include "nmea_decoder.h"
+#include "nmea0183_parser.h"
 #include <sstream>
 
-void NmeaMsgParser::SetOnHeaderParsed(HeaderParsedCallback cb) { m_header_cb = cb; }
-void NmeaMsgParser::SetOnStandardMsg(StandardMsgCallback cb) { m_standard_cb = cb; }
-void NmeaMsgParser::SetOnAisMsg(AisMsgCallback cb) { m_ais_cb = cb; }
+void Nmea0183Parser::SetOnHeaderParsed(HeaderParsedCallback cb) { m_header_cb = cb; }
+void Nmea0183Parser::SetOnStandardMsg(StandardMsgCallback cb) { m_standard_cb = cb; }
+void Nmea0183Parser::SetOnAisMsg(AisMsgCallback cb) { m_ais_cb = cb; }
 
-void NmeaMsgParser::ParseMsg(const std::string& msg) {
+void Nmea0183Parser::ParseMsg(const std::string& msg) {
     // 1. ��������� ��������� ��������� � �����
     if (msg.length() < 6) return;
     if (msg[0] != '$' && msg[0] != '!') return;
@@ -50,7 +50,7 @@ void NmeaMsgParser::ParseMsg(const std::string& msg) {
     }
 }
 
-bool NmeaMsgParser::ValidateChecksum(const std::string& msg) const {
+bool Nmea0183Parser::ValidateChecksum(const std::string& msg) const {
     size_t star = msg.find('*');
     if (star == std::string::npos || star + 3 > msg.length()) return false;
 
@@ -69,7 +69,7 @@ bool NmeaMsgParser::ValidateChecksum(const std::string& msg) const {
     }
 }
 
-std::vector<std::string> NmeaMsgParser::SplitString(const std::string& str, char delimiter) const {
+std::vector<std::string> Nmea0183Parser::SplitString(const std::string& str, char delimiter) const {
     std::vector<std::string> tokens;
     std::string token;
     std::istringstream tokenStream(str);

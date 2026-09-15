@@ -1,3 +1,0 @@
-D:\Programs\cmake\bin\cmake.exe -E rm -f CMakeFiles\nmea_decoder_ext.dir/objects.a
-D:\Programs\MinGW\mingw32\bin\ar.exe qc CMakeFiles\nmea_decoder_ext.dir/objects.a @CMakeFiles\nmea_decoder_ext.dir\objects1.rsp
-D:\Programs\MinGW\mingw32\bin\c++.exe -O3 -DNDEBUG -shared -o D:\Projects\C++\NMEA_DHF\build\mingw\release\NmeaDecoderExt.dll -Wl,--out-implib,D:\Projects\C++\NMEA_DHF\build\mingw\archive\libNmeaDecoderExt.dll.a -Wl,--major-image-version,0,--minor-image-version,0 -Wl,--whole-archive CMakeFiles\nmea_decoder_ext.dir/objects.a -Wl,--no-whole-archive @CMakeFiles\nmea_decoder_ext.dir\linkLibs.rsp

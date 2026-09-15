@@ -4,9 +4,9 @@ project(NmeaDecoder C CXX)
 # CMake-generated project files are kept in mingw/ or msvc/.
 # Runtime artifacts are kept separately in build/<toolchain>/.
 if(MSVC)
-    set(NMEA_OUTPUT_ROOT "${CMAKE_SOURCE_DIR}/build/msvc")
+    set(NMEA_OUTPUT_ROOT "${CMAKE_BINARY_DIR}/msvc")
 elseif(MINGW)
-    set(NMEA_OUTPUT_ROOT "${CMAKE_SOURCE_DIR}/build/mingw")
+    set(NMEA_OUTPUT_ROOT "${CMAKE_BINARY_DIR}/mingw")
 else()
     set(NMEA_OUTPUT_ROOT "${CMAKE_BINARY_DIR}")
 endif()
@@ -40,19 +40,20 @@ set(CMAKE_C_STANDARD_REQUIRED ON)
 
 # ����������� �������� ������ �������
 set(PROJECT_SOURCES
-    NMEA/main.cpp
-    NMEA/nmea_processor.cpp
-    NMEA/nmea_service.cpp
-    NMEA/nmea450_decoder.cpp
-    NMEA/nmea_decoder.cpp
+    NMEA/test_nmea_decoder.cpp
+    NMEA/net_processor.cpp
+    NMEA/garbage_collection_service.cpp
+    NMEA/nmea450_parser.cpp
+    NMEA/nmea0183_parser.cpp
     NMEA/ais_decoder.cpp
-    NMEA/geo_parser.cpp
+    NMEA/geo_msg_parser.cpp
 )
 
 # �������� ������������ �����
-add_executable(nmea_decoder ${PROJECT_SOURCES})
-nmea_set_target_output_directories(nmea_decoder)
-target_include_directories(nmea_decoder PRIVATE
+add_executable(test_nmea_decoder ${PROJECT_SOURCES})
+nmea_set_target_output_directories(test_nmea_decoder)
+set_target_properties(test_nmea_decoder PROPERTIES OUTPUT_NAME "test_nmea_decoder")
+target_include_directories(test_nmea_decoder PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}/NMEA
 )
@@ -61,7 +62,7 @@ target_include_directories(nmea_decoder PRIVATE
 # 2. ��������� ����������� ���������� � FAST-MATH
 # ====================================================================
 if(MSVC)
-    target_compile_options(nmea_decoder PRIVATE 
+    target_compile_options(test_nmea_decoder PRIVATE
         /O2          # ������������ ����������� �� ��������
         /Oi          # ��������� ���������� (intrinsic) �������
         /Ot          # ������������ ����������� �������� ����� ��������
@@ -73,7 +74,7 @@ if(MSVC)
     message(STATUS "[MSVC OPTIMIZATION] ������� ���������������� �������������� ����� /fp:fast � ���������� AVX2.")
 else()
     # ��������� ��� ������������ GCC � Clang (Linux / MinGW)
-    target_compile_options(nmea_decoder PRIVATE 
+    target_compile_options(test_nmea_decoder PRIVATE
         -O3                 # ������������ ������� ����������� �����������
         -ffast-math         # ��������� ���������������� ���������� (IEEE 754 bypass)
         -march=native       # ����������� ��� ������� ����������� ���������� �����
@@ -82,7 +83,7 @@ else()
         -Wextra             # �������������� �������������� ��� ������� ����
     )
     # �������� ��������� ���������� POSIX ������� ��� ������ �������� GC
-    target_link_libraries(nmea_decoder PRIVATE pthread)
+    target_link_libraries(test_nmea_decoder PRIVATE pthread)
     message(STATUS "[GCC/CLANG OPTIMIZATION] �������� ����� -O3, -ffast-math � ����-������������ ��� ����������� -march=native.")
 endif()
 
@@ -106,23 +107,22 @@ enable_testing()
 add_test(NAME GeodeticMathVerification COMMAND test_math)
 
 if(WIN32)
-    add_library(nmea_decoder_ext SHARED
-        main.cpp
+    add_library(dhf_nmea_decoder SHARED
         nmea_decoder.cpp
-        NMEA/nmea_decoder.cpp
-        NMEA/nmea450_decoder.cpp
+        NMEA/nmea0183_parser.cpp
+        NMEA/nmea450_parser.cpp
     )
 
-    target_include_directories(nmea_decoder_ext PRIVATE
+    target_include_directories(dhf_nmea_decoder PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}
         ${CMAKE_CURRENT_SOURCE_DIR}/NMEA
         ${CMAKE_CURRENT_SOURCE_DIR}/DHF/_example/include
         ${CMAKE_CURRENT_SOURCE_DIR}/DHF/_example
     )
-    target_compile_features(nmea_decoder_ext PRIVATE cxx_std_17)
-    target_compile_definitions(nmea_decoder_ext PRIVATE NMEA_DECODER_EXT_BUILD)
-    set_target_properties(nmea_decoder_ext PROPERTIES
-        OUTPUT_NAME "NmeaDecoderExt"
+    target_compile_features(dhf_nmea_decoder PRIVATE cxx_std_17)
+    target_compile_definitions(dhf_nmea_decoder PRIVATE dhf_nmea_decoder_BUILD)
+    set_target_properties(dhf_nmea_decoder PROPERTIES
+        OUTPUT_NAME "nmea_decoder"
         RUNTIME_OUTPUT_DIRECTORY "${NMEA_RELEASE_DIR}"
         LIBRARY_OUTPUT_DIRECTORY "${NMEA_LIB_DIR}"
         ARCHIVE_OUTPUT_DIRECTORY "${NMEA_ARCHIVE_DIR}"
@@ -130,7 +130,7 @@ if(WIN32)
 
     foreach(CONFIG Debug Release RelWithDebInfo MinSizeRel)
         string(TOUPPER "${CONFIG}" CONFIG_UPPER)
-        set_target_properties(nmea_decoder_ext PROPERTIES
+        set_target_properties(dhf_nmea_decoder PROPERTIES
             RUNTIME_OUTPUT_DIRECTORY_${CONFIG_UPPER} "${NMEA_RELEASE_DIR}"
             LIBRARY_OUTPUT_DIRECTORY_${CONFIG_UPPER} "${NMEA_LIB_DIR}"
             ARCHIVE_OUTPUT_DIRECTORY_${CONFIG_UPPER} "${NMEA_ARCHIVE_DIR}"
@@ -138,6 +138,6 @@ if(WIN32)
     endforeach()
 
     if(MINGW)
-        set_target_properties(nmea_decoder_ext PROPERTIES PREFIX "")
+        set_target_properties(dhf_nmea_decoder PROPERTIES PREFIX "")
     endif()
 endif()
