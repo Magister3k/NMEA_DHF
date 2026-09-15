@@ -174,17 +174,17 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </ProjectReference>
-    <ProjectReference Include="D:\Projects\C++\NMEA_DHF\msvc\nmea_decoder.vcxproj">
-      <Project>{B311A11D-762B-3EF8-941C-00C9AFBE311A}</Project>
-      <Name>nmea_decoder</Name>
-    </ProjectReference>
-    <ProjectReference Include="D:\Projects\C++\NMEA_DHF\msvc\nmea_decoder_ext.vcxproj">
-      <Project>{BC3CFAE1-ACA4-36E5-A2BC-F10043D63CF7}</Project>
-      <Name>nmea_decoder_ext</Name>
+    <ProjectReference Include="D:\Projects\C++\NMEA_DHF\msvc\dhf_nmea_decoder.vcxproj">
+      <Project>{A161CFA4-08C9-36DA-8C79-4F4B7E17859F}</Project>
+      <Name>dhf_nmea_decoder</Name>
     </ProjectReference>
     <ProjectReference Include="D:\Projects\C++\NMEA_DHF\msvc\test_math.vcxproj">
       <Project>{391FF5D5-4466-3BBD-BF8A-BD44CE16EAFC}</Project>
       <Name>test_math</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\Projects\C++\NMEA_DHF\msvc\test_nmea_decoder.vcxproj">
+      <Project>{A42BF650-579E-3046-BFE6-FE4996F2BD2F}</Project>
+      <Name>test_nmea_decoder</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -9,9 +9,9 @@
 	</Configurations>
 	<Project Path="ALL_BUILD.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="725a229d-5ef2-348b-97cf-ffcca68c3d66" DefaultStartup="true">
 		<BuildDependency Project="ZERO_CHECK.vcxproj"/>
-		<BuildDependency Project="nmea_decoder.vcxproj"/>
-		<BuildDependency Project="nmea_decoder_ext.vcxproj"/>
+		<BuildDependency Project="dhf_nmea_decoder.vcxproj"/>
 		<BuildDependency Project="test_math.vcxproj"/>
+		<BuildDependency Project="test_nmea_decoder.vcxproj"/>
 		<Build Solution="Debug|*" Project="false"/>
 		<Build Solution="Release|*" Project="false"/>
 		<Build Solution="MinSizeRel|*" Project="false"/>
@@ -25,13 +25,13 @@
 		<Build Solution="RelWithDebInfo|*" Project="false"/>
 	</Project>
 	<Project Path="ZERO_CHECK.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="5e4ec763-5ea7-38b8-92be-7ce04e7a2229"/>
-	<Project Path="nmea_decoder.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="b311a11d-762b-3ef8-941c-00c9afbe311a">
-		<BuildDependency Project="ZERO_CHECK.vcxproj"/>
-	</Project>
-	<Project Path="nmea_decoder_ext.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="bc3cfae1-aca4-36e5-a2bc-f10043d63cf7">
+	<Project Path="dhf_nmea_decoder.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="a161cfa4-08c9-36da-8c79-4f4b7e17859f">
 		<BuildDependency Project="ZERO_CHECK.vcxproj"/>
 	</Project>
 	<Project Path="test_math.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="391ff5d5-4466-3bbd-bf8a-bd44ce16eafc">
+		<BuildDependency Project="ZERO_CHECK.vcxproj"/>
+	</Project>
+	<Project Path="test_nmea_decoder.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="a42bf650-579e-3046-bfe6-fe4996f2bd2f">
 		<BuildDependency Project="ZERO_CHECK.vcxproj"/>
 	</Project>
 </Solution>

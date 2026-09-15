@@ -22,13 +22,13 @@
 	"dependencies" : 
 	[
 		{
+			"id" : "test_nmea_decoder::@6890427a1f51a3e7e1df"
+		},
+		{
 			"id" : "test_math::@6890427a1f51a3e7e1df"
 		},
 		{
-			"id" : "nmea_decoder_ext::@6890427a1f51a3e7e1df"
-		},
-		{
-			"id" : "nmea_decoder::@6890427a1f51a3e7e1df"
+			"id" : "dhf_nmea_decoder::@6890427a1f51a3e7e1df"
 		},
 		{
 			"id" : "ZERO_CHECK::@6890427a1f51a3e7e1df"
@@ -40,13 +40,13 @@
 	"orderDependencies" : 
 	[
 		{
+			"id" : "test_nmea_decoder::@6890427a1f51a3e7e1df"
+		},
+		{
 			"id" : "test_math::@6890427a1f51a3e7e1df"
 		},
 		{
-			"id" : "nmea_decoder_ext::@6890427a1f51a3e7e1df"
-		},
-		{
-			"id" : "nmea_decoder::@6890427a1f51a3e7e1df"
+			"id" : "dhf_nmea_decoder::@6890427a1f51a3e7e1df"
 		}
 	],
 	"paths" : 

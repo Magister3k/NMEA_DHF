@@ -48,7 +48,7 @@
 				{
 					"directoryIndex" : 0,
 					"id" : "ALL_BUILD::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-ALL_BUILD-Debug-118f77c94fa3885fb38b.json",
+					"jsonFile" : "target-ALL_BUILD-Debug-faf3c4479b42dc28bd12.json",
 					"name" : "ALL_BUILD",
 					"projectIndex" : 0
 				},
@@ -61,23 +61,23 @@
 				},
 				{
 					"directoryIndex" : 0,
-					"id" : "nmea_decoder::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-nmea_decoder-Debug-d2ca623c400637739644.json",
-					"name" : "nmea_decoder",
-					"projectIndex" : 0
-				},
-				{
-					"directoryIndex" : 0,
-					"id" : "nmea_decoder_ext::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-nmea_decoder_ext-Debug-11ef8e55efcf5f487295.json",
-					"name" : "nmea_decoder_ext",
+					"id" : "dhf_nmea_decoder::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-dhf_nmea_decoder-Debug-9d4abc1c77b2f06569d9.json",
+					"name" : "dhf_nmea_decoder",
 					"projectIndex" : 0
 				},
 				{
 					"directoryIndex" : 0,
 					"id" : "test_math::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-test_math-Debug-973feec5c23db5fcd982.json",
+					"jsonFile" : "target-test_math-Debug-18595831efab498a155e.json",
 					"name" : "test_math",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "test_nmea_decoder::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-test_nmea_decoder-Debug-a837f6b65067c0a3da8b.json",
+					"name" : "test_nmea_decoder",
 					"projectIndex" : 0
 				}
 			]
@@ -129,7 +129,7 @@
 				{
 					"directoryIndex" : 0,
 					"id" : "ALL_BUILD::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-ALL_BUILD-Release-118f77c94fa3885fb38b.json",
+					"jsonFile" : "target-ALL_BUILD-Release-faf3c4479b42dc28bd12.json",
 					"name" : "ALL_BUILD",
 					"projectIndex" : 0
 				},
@@ -142,23 +142,23 @@
 				},
 				{
 					"directoryIndex" : 0,
-					"id" : "nmea_decoder::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-nmea_decoder-Release-0028ea69eadd1900c408.json",
-					"name" : "nmea_decoder",
-					"projectIndex" : 0
-				},
-				{
-					"directoryIndex" : 0,
-					"id" : "nmea_decoder_ext::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-nmea_decoder_ext-Release-2344bd9ef8437f05b19f.json",
-					"name" : "nmea_decoder_ext",
+					"id" : "dhf_nmea_decoder::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-dhf_nmea_decoder-Release-c634cbb21a2e6a0b61cd.json",
+					"name" : "dhf_nmea_decoder",
 					"projectIndex" : 0
 				},
 				{
 					"directoryIndex" : 0,
 					"id" : "test_math::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-test_math-Release-173bb1cfab665956c75c.json",
+					"jsonFile" : "target-test_math-Release-d81c2e5478130b2ad3d4.json",
 					"name" : "test_math",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "test_nmea_decoder::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-test_nmea_decoder-Release-ecb95a9b5f03c8f3eae6.json",
+					"name" : "test_nmea_decoder",
 					"projectIndex" : 0
 				}
 			]
@@ -210,7 +210,7 @@
 				{
 					"directoryIndex" : 0,
 					"id" : "ALL_BUILD::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-ALL_BUILD-MinSizeRel-118f77c94fa3885fb38b.json",
+					"jsonFile" : "target-ALL_BUILD-MinSizeRel-faf3c4479b42dc28bd12.json",
 					"name" : "ALL_BUILD",
 					"projectIndex" : 0
 				},
@@ -223,23 +223,23 @@
 				},
 				{
 					"directoryIndex" : 0,
-					"id" : "nmea_decoder::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-nmea_decoder-MinSizeRel-0028ea69eadd1900c408.json",
-					"name" : "nmea_decoder",
-					"projectIndex" : 0
-				},
-				{
-					"directoryIndex" : 0,
-					"id" : "nmea_decoder_ext::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-nmea_decoder_ext-MinSizeRel-2344bd9ef8437f05b19f.json",
-					"name" : "nmea_decoder_ext",
+					"id" : "dhf_nmea_decoder::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-dhf_nmea_decoder-MinSizeRel-c634cbb21a2e6a0b61cd.json",
+					"name" : "dhf_nmea_decoder",
 					"projectIndex" : 0
 				},
 				{
 					"directoryIndex" : 0,
 					"id" : "test_math::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-test_math-MinSizeRel-173bb1cfab665956c75c.json",
+					"jsonFile" : "target-test_math-MinSizeRel-d81c2e5478130b2ad3d4.json",
 					"name" : "test_math",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "test_nmea_decoder::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-test_nmea_decoder-MinSizeRel-ecb95a9b5f03c8f3eae6.json",
+					"name" : "test_nmea_decoder",
 					"projectIndex" : 0
 				}
 			]
@@ -291,7 +291,7 @@
 				{
 					"directoryIndex" : 0,
 					"id" : "ALL_BUILD::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-ALL_BUILD-RelWithDebInfo-118f77c94fa3885fb38b.json",
+					"jsonFile" : "target-ALL_BUILD-RelWithDebInfo-faf3c4479b42dc28bd12.json",
 					"name" : "ALL_BUILD",
 					"projectIndex" : 0
 				},
@@ -304,23 +304,23 @@
 				},
 				{
 					"directoryIndex" : 0,
-					"id" : "nmea_decoder::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-nmea_decoder-RelWithDebInfo-0028ea69eadd1900c408.json",
-					"name" : "nmea_decoder",
-					"projectIndex" : 0
-				},
-				{
-					"directoryIndex" : 0,
-					"id" : "nmea_decoder_ext::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-nmea_decoder_ext-RelWithDebInfo-2344bd9ef8437f05b19f.json",
-					"name" : "nmea_decoder_ext",
+					"id" : "dhf_nmea_decoder::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-dhf_nmea_decoder-RelWithDebInfo-c634cbb21a2e6a0b61cd.json",
+					"name" : "dhf_nmea_decoder",
 					"projectIndex" : 0
 				},
 				{
 					"directoryIndex" : 0,
 					"id" : "test_math::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-test_math-RelWithDebInfo-173bb1cfab665956c75c.json",
+					"jsonFile" : "target-test_math-RelWithDebInfo-d81c2e5478130b2ad3d4.json",
 					"name" : "test_math",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "test_nmea_decoder::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-test_nmea_decoder-RelWithDebInfo-ecb95a9b5f03c8f3eae6.json",
+					"name" : "test_nmea_decoder",
 					"projectIndex" : 0
 				}
 			]

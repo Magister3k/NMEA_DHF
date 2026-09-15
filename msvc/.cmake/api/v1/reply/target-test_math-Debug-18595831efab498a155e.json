@@ -2,10 +2,10 @@
 	"artifacts" : 
 	[
 		{
-			"path" : "D:/Projects/C++/NMEA_DHF/build/msvc/release/test_math.exe"
+			"path" : "msvc/release/test_math.exe"
 		},
 		{
-			"path" : "D:/Projects/C++/NMEA_DHF/build/msvc/release/test_math.pdb"
+			"path" : "msvc/release/test_math.pdb"
 		}
 	],
 	"backtrace" : 1,
@@ -29,19 +29,19 @@
 			{
 				"command" : 0,
 				"file" : 0,
-				"line" : 90,
+				"line" : 91,
 				"parent" : 0
 			},
 			{
 				"command" : 1,
 				"file" : 0,
-				"line" : 99,
+				"line" : 100,
 				"parent" : 0
 			},
 			{
 				"command" : 2,
 				"file" : 0,
-				"line" : 93,
+				"line" : 94,
 				"parent" : 0
 			}
 		]
@@ -57,7 +57,7 @@
 			"compileCommandFragments" : 
 			[
 				{
-					"fragment" : "-std:c++17 -MD"
+					"fragment" : "-std:c++17 -MDd"
 				},
 				{
 					"backtrace" : 2,
@@ -110,7 +110,7 @@
 		"commandFragments" : 
 		[
 			{
-				"fragment" : "-MD",
+				"fragment" : "-MDd",
 				"role" : "flags"
 			},
 			{

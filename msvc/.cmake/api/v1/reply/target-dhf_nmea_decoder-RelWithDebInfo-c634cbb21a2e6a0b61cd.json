@@ -2,10 +2,13 @@
 	"artifacts" : 
 	[
 		{
-			"path" : "D:/Projects/C++/NMEA_DHF/build/msvc/release/nmea_decoder.exe"
+			"path" : "msvc/release/nmea_decoder.dll"
 		},
 		{
-			"path" : "D:/Projects/C++/NMEA_DHF/build/msvc/release/nmea_decoder.pdb"
+			"path" : "msvc/archive/nmea_decoder.lib"
+		},
+		{
+			"path" : "msvc/release/nmea_decoder.pdb"
 		}
 	],
 	"backtrace" : 1,
@@ -13,9 +16,10 @@
 	{
 		"commands" : 
 		[
-			"add_executable",
-			"target_compile_options",
-			"target_include_directories"
+			"add_library",
+			"target_compile_definitions",
+			"target_include_directories",
+			"target_compile_features"
 		],
 		"files" : 
 		[
@@ -29,19 +33,25 @@
 			{
 				"command" : 0,
 				"file" : 0,
-				"line" : 53,
+				"line" : 110,
 				"parent" : 0
 			},
 			{
 				"command" : 1,
 				"file" : 0,
-				"line" : 64,
+				"line" : 123,
 				"parent" : 0
 			},
 			{
 				"command" : 2,
 				"file" : 0,
-				"line" : 55,
+				"line" : 116,
+				"parent" : 0
+			},
+			{
+				"command" : 3,
+				"file" : 0,
+				"line" : 122,
 				"parent" : 0
 			}
 		]
@@ -58,34 +68,16 @@
 			[
 				{
 					"fragment" : "-std:c++17 -MD"
-				},
+				}
+			],
+			"defines" : 
+			[
 				{
 					"backtrace" : 2,
-					"fragment" : "/O2"
+					"define" : "dhf_nmea_decoder_BUILD"
 				},
 				{
-					"backtrace" : 2,
-					"fragment" : "/Oi"
-				},
-				{
-					"backtrace" : 2,
-					"fragment" : "/Ot"
-				},
-				{
-					"backtrace" : 2,
-					"fragment" : "/fp:fast"
-				},
-				{
-					"backtrace" : 2,
-					"fragment" : "/arch:AVX2"
-				},
-				{
-					"backtrace" : 2,
-					"fragment" : "/nologo"
-				},
-				{
-					"backtrace" : 2,
-					"fragment" : "/W3"
+					"define" : "dhf_nmea_decoder_EXPORTS"
 				}
 			],
 			"includes" : 
@@ -97,6 +89,14 @@
 				{
 					"backtrace" : 3,
 					"path" : "D:/Projects/C++/NMEA_DHF/NMEA"
+				},
+				{
+					"backtrace" : 3,
+					"path" : "D:/Projects/C++/NMEA_DHF/DHF/_example/include"
+				},
+				{
+					"backtrace" : 3,
+					"path" : "D:/Projects/C++/NMEA_DHF/DHF/_example"
 				}
 			],
 			"language" : "CXX",
@@ -104,7 +104,7 @@
 			{
 				"backtraces" : 
 				[
-					1
+					4
 				],
 				"standard" : "17"
 			},
@@ -112,11 +112,7 @@
 			[
 				0,
 				1,
-				2,
-				3,
-				4,
-				5,
-				6
+				2
 			]
 		}
 	],
@@ -126,19 +122,11 @@
 			"id" : "ZERO_CHECK::@6890427a1f51a3e7e1df"
 		}
 	],
-	"id" : "nmea_decoder::@6890427a1f51a3e7e1df",
+	"id" : "dhf_nmea_decoder::@6890427a1f51a3e7e1df",
 	"link" : 
 	{
 		"commandFragments" : 
 		[
-			{
-				"fragment" : "-MD",
-				"role" : "flags"
-			},
-			{
-				"fragment" : "/subsystem:console",
-				"role" : "flags"
-			},
 			{
 				"fragment" : "kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib",
 				"role" : "libraries"
@@ -146,8 +134,8 @@
 		],
 		"language" : "CXX"
 	},
-	"name" : "nmea_decoder",
-	"nameOnDisk" : "nmea_decoder.exe",
+	"name" : "dhf_nmea_decoder",
+	"nameOnDisk" : "nmea_decoder.dll",
 	"paths" : 
 	{
 		"build" : ".",
@@ -161,11 +149,7 @@
 			[
 				0,
 				1,
-				2,
-				3,
-				4,
-				5,
-				6
+				2
 			]
 		}
 	],
@@ -178,7 +162,7 @@
 				1
 			],
 			"compileGroupIndex" : 0,
-			"path" : "NMEA/main.cpp",
+			"path" : "nmea_decoder.cpp",
 			"sourceGroupIndex" : 0
 		},
 		{
@@ -188,7 +172,7 @@
 				1
 			],
 			"compileGroupIndex" : 0,
-			"path" : "NMEA/nmea_processor.cpp",
+			"path" : "NMEA/nmea0183_parser.cpp",
 			"sourceGroupIndex" : 0
 		},
 		{
@@ -198,49 +182,9 @@
 				1
 			],
 			"compileGroupIndex" : 0,
-			"path" : "NMEA/nmea_service.cpp",
-			"sourceGroupIndex" : 0
-		},
-		{
-			"backtrace" : 1,
-			"backtraces" : 
-			[
-				1
-			],
-			"compileGroupIndex" : 0,
-			"path" : "NMEA/nmea450_decoder.cpp",
-			"sourceGroupIndex" : 0
-		},
-		{
-			"backtrace" : 1,
-			"backtraces" : 
-			[
-				1
-			],
-			"compileGroupIndex" : 0,
-			"path" : "NMEA/nmea_decoder.cpp",
-			"sourceGroupIndex" : 0
-		},
-		{
-			"backtrace" : 1,
-			"backtraces" : 
-			[
-				1
-			],
-			"compileGroupIndex" : 0,
-			"path" : "NMEA/ais_decoder.cpp",
-			"sourceGroupIndex" : 0
-		},
-		{
-			"backtrace" : 1,
-			"backtraces" : 
-			[
-				1
-			],
-			"compileGroupIndex" : 0,
-			"path" : "NMEA/geo_parser.cpp",
+			"path" : "NMEA/nmea450_parser.cpp",
 			"sourceGroupIndex" : 0
 		}
 	],
-	"type" : "EXECUTABLE"
+	"type" : "SHARED_LIBRARY"
 }
