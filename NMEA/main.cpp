@@ -88,7 +88,7 @@ void ProcThreadLoop() {
         std::cout << "  4. Тип сообщения:       " << out.msg_type_descr << std::endl;
         std::cout << "  5. Источник:            " << out.src << std::endl;
         std::cout << "  6. Временная метка:     " << out.timestamp << std::endl;
-        std::cout << "  7. Идентификатор:       " << out.object_id << std::endl;
+        std::cout << "  7. Идентификатор:       " << out.object << std::endl;
         
         if (out.has_pos) {
             std::cout << "  8. Широта: " << std::fixed << std::setprecision(6) << out.lat << std::endl;
@@ -99,13 +99,13 @@ void ProcThreadLoop() {
         std::cout << "  11. Направление (COG):  " << out.heading << " градусов" << std::endl;
 
         if (out.is_ais) {
-            std::cout << "  12. Тип сообщения AIS: " << out.ais_msg_type << std::endl;
+            std::cout << "  12. Тип сообщения AIS: " << out.ais_msg_type_descr << std::endl;
             std::cout << "  13. Сообщение AIS:     " << out.ais_msg << std::endl;
             
-            if (out.ais_msg_type == 5) {
+            if (out.ais_msg_type_descr == "Static and Voyage Related Data") {
                 std::cout << "  14. Название судна:  " << out.ais_ship_name << std::endl;
                 std::cout << "  15. Позывной судна:  " << out.ais_call_sign << std::endl;
-                std::cout << "  16. Порт назначения: " << out.ais_dest << std::endl;
+                std::cout << "  16. Порт назначения: " << out.ais_dest_port << std::endl;
             }
         }
         std::cout << "====================================================================" << std::endl;

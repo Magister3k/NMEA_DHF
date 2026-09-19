@@ -7,6 +7,7 @@
 #include "NMEA/nmea0183_parser.h"
 #include "NMEA/nmea450_parser.h"
 
+#include <map>
 #include <string>
 
 const char MODULE_INTERFACE_VERSION[16] = "0.0";
@@ -46,18 +47,39 @@ public:
     bool __stdcall recvGuiData(unsigned short type, char* data, int len) override;
     void __stdcall updateStatistic() override;
 
+public:
+    enum MessageFilter { FilterAll, FilterNmea, FilterAis };
+
 private:
+
     void ProcMsg(const std::string& msg, const std::string& src);
     void ProcRawBytes(const char* data, int len);
     bool SendMsg(const std::string& msg);
     void SendStats(const char* msg);
+    void ApplySettings(SAppModuleSettings* sets, bool updateGui);
+    void UpdateGuiSettings();
+    void UpdateGuiEnabled();
+    bool IsAllowed(bool isAis, bool hasPos) const;
+
+#ifdef _WIN32
+    static LRESULT CALLBACK SettingsWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
+    void CreateSettingsControls(HWND hwnd);
+#endif
 
     Nmea0183Parser m_decoder;
     Nmea450Parser m_nmea450;
     std::string m_lineBuffer;
     std::string m_src;
-    unsigned __int64 m_validMsgs;
+    MessageFilter m_filter;
+    bool m_coordinatesOnly;
+    unsigned __int64 m_processedMsgs;
     unsigned __int64 m_rejectedMsgs;
+    unsigned __int64 m_aisDecodedMsgs;
+    unsigned __int64 m_posMsgs;
+    unsigned __int64 m_nmeaPosMsgs;
+    unsigned __int64 m_aisPosMsgs;
+    std::map<std::string, unsigned __int64> m_nmeaMsgCounts;
+    std::map<unsigned int, unsigned __int64> m_aisTypeCounts;
 };
 
 #endif
