@@ -18,35 +18,37 @@ public:
     NmeaDecoder();
     ~NmeaDecoder();
 
-    bool __stdcall Constructor(unsigned __int64 uid) override;
-    void __stdcall Destructor() override;
-    bool __stdcall CreateGui(IfaceCallBackGui* ig) override;
-    bool __stdcall CreateProc(IfaceCallBackProc* ip) override;
-    bool __stdcall Initialize() override;
-    void __stdcall Free() override;
+    bool __stdcall Constructor(unsigned __int64 uid);
+    void __stdcall Destructor();
+    bool __stdcall CreateGui(IfaceCallBackGui* ig);
+    bool __stdcall CreateProc(IfaceCallBackProc* ip);
+    bool __stdcall Initialize();
+    void __stdcall Free();
 
-    void __stdcall CreateForm() override;
-    void __stdcall DestroyForm() override;
-    void __stdcall ShowForm(bool show = true) override;
+    void __stdcall CreateForm();
+    void __stdcall DestroyForm();
+    void __stdcall ShowForm(bool show = true);
 
-    void __stdcall setGuiModuleSettings(SAppModuleSettings* sets) override;
-    void __stdcall setGuiModuleOptions(SAppModuleOptions* opts) override;
-    void __stdcall setProcModuleSettings(SAppModuleSettings* sets) override;
-    void __stdcall setProcModuleOptions(SAppModuleOptions* opts) override;
-    SAppModuleSettings* __stdcall getModuleParamsSetting(SAppModuleSettings* sets = NULL) override;
-    SAppModuleOptions* __stdcall getModuleParamsOptions(SAppModuleOptions* opts = NULL) override;
-    void __stdcall getDefaultModuleParams(SAppModuleSettings* sets, SAppModuleOptions* opts) override;
+    void __stdcall setGuiModuleSettings(SAppModuleSettings* sets);
+    void __stdcall setGuiModuleOptions(SAppModuleOptions* opts);
+    void __stdcall setProcModuleSettings(SAppModuleSettings* sets);
+    void __stdcall setProcModuleOptions(SAppModuleOptions* opts);
+    SAppModuleSettings* __stdcall getModuleParamsSetting(SAppModuleSettings* sets = NULL);
+    SAppModuleOptions* __stdcall getModuleParamsOptions(SAppModuleOptions* opts = NULL);
+    void __stdcall getDefaultModuleParams(SAppModuleSettings* sets, SAppModuleOptions* opts);
 
-    void __stdcall setProcState(bool state) override;
-    bool __stdcall procGuiData(unsigned short type, void* data, int len) override;
-    bool __stdcall HookMessage(int wParam, int lParam) override;
-    bool __stdcall workProc(bool rSleep) override;
-    bool __stdcall workData(char* idsData, int idsDataLen, char* data, int len) override;
-    void __stdcall timing() override;
-    bool __stdcall recvGuiData(unsigned short type, char* data, int len) override;
-    void __stdcall updateStatistic() override;
+    void __stdcall setProcState(bool state);
+    bool __stdcall procGuiData(unsigned short type, void* data, int len);
+    bool __stdcall HookMessage(int wParam, int lParam);
+    bool __stdcall workProc(bool rSleep);
+    bool __stdcall workData(char* idsData, int idsDataLen, char* data, int len);
+    void __stdcall timing();
+    bool __stdcall recvGuiData(unsigned short type, char* data, int len);
+    void __stdcall updateStatistic();
 
 private:
+    static void OnNmea450Message(void* context, const std::string& msg, const std::string& src);
+    static void OnNmeaHeader(void* context, const NmeaHeaderInfo& header);
     void ProcMsg(const std::string& msg, const std::string& src);
     void ProcRawBytes(const char* data, int len);
     bool SendMsg(const std::string& msg);
@@ -56,6 +58,7 @@ private:
     Nmea450Parser m_nmea450;
     std::string m_lineBuffer;
     std::string m_src;
+    bool m_headerParsed;
     unsigned __int64 m_validMsgs;
     unsigned __int64 m_rejectedMsgs;
 };

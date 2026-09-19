@@ -1,84 +1,49 @@
 #include "nmea0183_parser.h"
-#include <sstream>
 
-void Nmea0183Parser::SetOnHeaderParsed(HeaderParsedCallback cb) { m_header_cb = cb; }
-void Nmea0183Parser::SetOnStandardMsg(StandardMsgCallback cb) { m_standard_cb = cb; }
-void Nmea0183Parser::SetOnAisMsg(AisMsgCallback cb) { m_ais_cb = cb; }
+Nmea0183Parser::Nmea0183Parser()
+    : m_headerCallback(0), m_callbackContext(0)
+{
+}
 
-void Nmea0183Parser::ParseMsg(const std::string& msg) {
-    // 1. ��������� ��������� ��������� � �����
-    if (msg.length() < 6) return;
-    if (msg[0] != '$' && msg[0] != '!') return;
+void Nmea0183Parser::SetOnHeaderParsed(HeaderParsedCallback callback, void* context)
+{
+    m_headerCallback = callback;
+    m_callbackContext = context;
+}
 
-    // 2. �������� ���������� ����������� ����� (XOR)
+void Nmea0183Parser::ParseMsg(const std::string& msg)
+{
+    NmeaHeaderInfo header;
+
+    if (msg.length() < 6 || (msg[0] != '$' && msg[0] != '!')) return;
     if (!ValidateChecksum(msg)) return;
 
-    // 3. �������� ���������� ��������� (Talker ID � Message Type)
-    NmeaHeaderInfo header;
     header.msg = msg;
-    header.talker_id = msg.substr(1, 2);   // ��������, "GP" ��� "AI"
-    header.msg_type = msg.substr(3, 3); // ��������, "GGA" ��� "VDM"
+    header.talker_id = msg.substr(1, 2);
+    header.msg_type = msg.substr(3, 3);
 
-    // ������� ������� ������� ��������� ��� �������� ��� ����
-    if (m_header_cb) {
-        m_header_cb(header);
-    }
-
-    // 4. �������� ����������� ����� � ����� ������ (���, ��� ����� '*' ������� ���� '*')
-    size_t star_pos = msg.find('*');
-    std::string body_without_checksum = msg.substr(0, star_pos);
-
-    // 5. �����������: ��������� ������ �� ������� �� ������ �����
-    std::vector<std::string> fields = SplitString(body_without_checksum, ',');
-
-    // 6. ������������� �� ������ ���������
-    if (msg[0] == '!') {
-        // �������� ����������������� ������ (������� AIS: !AIVDM, !AIVDO)
-        if ((header.msg_type == "VDM" || header.msg_type == "VDO") && fields.size() >= 7) {
-            if (m_ais_cb) {
-                // �������� ������ 5-� ����, ���������� 6-������ ������
-                m_ais_cb(fields[5]);
-            }
-        }
-    } else {
-        // ����������� ��������� �������� (NMEA 0183: $GPGGA, $GPRMC, $HEHDT)
-        if (m_standard_cb) {
-            // �������� Talker ID, ��� � ������ ����� (������� � ������� 1, ��� ��� 0 � ��� ���������)
-            std::vector<std::string> data_fields(fields.begin() + 1, fields.end());
-            m_standard_cb(header.talker_id, header.msg_type, data_fields);
-        }
-    }
+    if (m_headerCallback != 0) m_headerCallback(m_callbackContext, header);
 }
 
-bool Nmea0183Parser::ValidateChecksum(const std::string& msg) const {
-    size_t star = msg.find('*');
-    if (star == std::string::npos || star + 3 > msg.length()) return false;
+bool Nmea0183Parser::ValidateChecksum(const std::string& msg) const
+{
+    const std::string::size_type star = msg.find('*');
+    unsigned char checksum = 0;
+    unsigned int expected = 0;
+    char digit;
+    std::string::size_type i;
 
-    uint8_t checksum = 0;
-    // ������� XOR ���� �������� ������ ����� '$'/'!' � '*'
-    for (size_t i = 1; i < star; ++i) {
-        checksum ^= static_cast<uint8_t>(msg[i]);
-    }
+    if (star == std::string::npos || star + 3 != msg.length()) return false;
 
-    std::string hex_str = msg.substr(star + 1, 2);
-    try {
-        unsigned long target_checksum = std::stoul(hex_str, nullptr, 16);
-        return checksum == static_cast<uint8_t>(target_checksum);
-    } catch (...) {
-        return false;
-    }
-}
+    for (i = 1; i < star; ++i) checksum ^= static_cast<unsigned char>(msg[i]);
 
-std::vector<std::string> Nmea0183Parser::SplitString(const std::string& str, char delimiter) const {
-    std::vector<std::string> tokens;
-    std::string token;
-    std::istringstream tokenStream(str);
-    while (std::getline(tokenStream, token, delimiter)) {
-        tokens.push_back(token);
+    for (i = star + 1; i < star + 3; ++i) {
+        digit = msg[i];
+        expected <<= 4;
+        if (digit >= '0' && digit <= '9') expected |= digit - '0';
+        else if (digit >= 'A' && digit <= 'F') expected |= digit - 'A' + 10;
+        else if (digit >= 'a' && digit <= 'f') expected |= digit - 'a' + 10;
+        else return false;
     }
-    // ���� ������ ������������� ������������ (��������, ",,"), ��������� ������ ����� � �����
-    if (!str.empty() && str.back() == delimiter) {
-        tokens.push_back("");
-    }
-    return tokens;
+    return checksum == expected;
 }

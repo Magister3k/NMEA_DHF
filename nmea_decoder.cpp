@@ -10,13 +10,17 @@
 
 namespace
 {
-const char kShortName[] = "������� NMEA";
-const char kLongName[] = "������� ��������� NMEA/AIS (0183/61162-450)";
+const char kShortName[] = "NMEA decoder";
+const char kLongName[] = "NMEA/AIS decoder (0183/61162-450)";
 const char kGroupName[] = "PineCode Lab";
 }
 
 #ifdef _WIN32
+#if defined(__BORLANDC__)
+int WINAPI DllEntryPoint(HINSTANCE instance, unsigned long reason, void* reserved)
+#else
 BOOL WINAPI DllMain(HINSTANCE instance, DWORD reason, LPVOID reserved)
+#endif
 {
     (void)instance;
     (void)reason;
@@ -26,12 +30,12 @@ BOOL WINAPI DllMain(HINSTANCE instance, DWORD reason, LPVOID reserved)
 #endif
 
 NmeaDecoder::NmeaDecoder()
-    : m_validMsgs(0), m_rejectedMsgs(0)
+    : m_headerParsed(false), m_validMsgs(0), m_rejectedMsgs(0)
 {
-    std::strncpy(aShortName, kShortName, sizeof(aShortName) - 1);
-    std::strncpy(aLongName, kLongName, sizeof(aLongName) - 1);
-    std::strncpy(aGroupName, kGroupName, sizeof(aGroupName) - 1);
-    std::snprintf(aVersion, sizeof(aVersion), "%s.%s", MODULE_INTERFACE_VERSION, MODULE_RELEASE_VERSION);
+    ::strncpy(aShortName, kShortName, sizeof(aShortName) - 1);
+    ::strncpy(aLongName, kLongName, sizeof(aLongName) - 1);
+    ::strncpy(aGroupName, kGroupName, sizeof(aGroupName) - 1);
+    ::sprintf(aVersion, "%s.%s", MODULE_INTERFACE_VERSION, MODULE_RELEASE_VERSION);
     bIsInputModule = false;
     byteTypeData = true;
     typeData = '\n';
@@ -73,11 +77,10 @@ bool __stdcall NmeaDecoder::Initialize()
     send = 0;
     m_validMsgs = 0;
     m_rejectedMsgs = 0;
+    m_headerParsed = false;
     m_lineBuffer.clear();
 
-    m_nmea450.SetOnMsgAssembled([this](const std::string& msg, const std::string& src) {
-        ProcMsg(msg, src);
-    });
+    m_nmea450.SetOnMsgAssembled(&NmeaDecoder::OnNmea450Message, this);
     return true;
 }
 
@@ -113,7 +116,7 @@ SAppModuleOptions* __stdcall NmeaDecoder::getModuleParamsOptions(SAppModuleOptio
 void __stdcall NmeaDecoder::getDefaultModuleParams(SAppModuleSettings* sets, SAppModuleOptions* opts)
 {
     if (sets != NULL) {
-        std::strncpy(sets->name, "NMEA decoder", sizeof(sets->name) - 1);
+        ::strncpy(sets->name, "NMEA decoder", sizeof(sets->name) - 1);
         sets->cnt_params = 0;
         sets->params = NULL;
     }
@@ -158,8 +161,8 @@ bool __stdcall NmeaDecoder::workData(char* idsData, int idsDataLen, char* data, 
         ifaceProc->PutPrevIdentify(idsData, idsDataLen);
     }
 
-    if (len >= 6 && std::memcmp(data, "UdPbC\0", 6) == 0) {
-        m_nmea450.ProcPacket(reinterpret_cast<const uint8_t*>(data), static_cast<size_t>(len));
+    if (len >= 6 && ::memcmp(data, "UdPbC\0", 6) == 0) {
+        m_nmea450.ProcPacket(reinterpret_cast<const unsigned char*>(data), static_cast<unsigned long>(len));
     } else {
         ProcRawBytes(data, len);
     }
@@ -181,9 +184,7 @@ bool __stdcall NmeaDecoder::recvGuiData(unsigned short type, char* data, int len
 void __stdcall NmeaDecoder::updateStatistic()
 {
     char msg[128];
-    std::snprintf(msg, sizeof(msg), "valid=%llu rejected=%llu",
-                  static_cast<unsigned long long>(m_validMsgs),
-                  static_cast<unsigned long long>(m_rejectedMsgs));
+    ::sprintf(msg, "valid=%I64u rejected=%I64u", m_validMsgs, m_rejectedMsgs);
     SendStats(msg);
 }
 
@@ -206,21 +207,31 @@ void NmeaDecoder::ProcRawBytes(const char* data, int len)
 void NmeaDecoder::ProcMsg(const std::string& msg, const std::string& src)
 {
     std::string clean = msg;
-    while (!clean.empty() && (clean.back() == '\r' || clean.back() == '\n')) clean.pop_back();
+    while (!clean.empty() && (clean[clean.length() - 1] == '\r' || clean[clean.length() - 1] == '\n')) clean.erase(clean.length() - 1);
     if (clean.empty()) return;
     m_src = src;
 
-    bool parsed = false;
-    m_decoder.SetOnHeaderParsed([&parsed](const NmeaHeaderInfo&) { parsed = true; });
-    m_decoder.SetOnStandardMsg([](const std::string&, const std::string&, const std::vector<std::string>&) {});
-    m_decoder.SetOnAisMsg([](const std::string&) {});
+    m_headerParsed = false;
+    m_decoder.SetOnHeaderParsed(&NmeaDecoder::OnNmeaHeader, this);
     m_decoder.ParseMsg(clean);
 
-    if (parsed && SendMsg(clean)) {
+    if (m_headerParsed && SendMsg(clean)) {
         ++m_validMsgs;
     } else {
         ++m_rejectedMsgs;
     }
+}
+
+void NmeaDecoder::OnNmea450Message(void* context, const std::string& msg, const std::string& src)
+{
+    NmeaDecoder* decoder = static_cast<NmeaDecoder*>(context);
+    if (decoder != NULL) decoder->ProcMsg(msg, src);
+}
+
+void NmeaDecoder::OnNmeaHeader(void* context, const NmeaHeaderInfo& header)
+{
+    NmeaDecoder* decoder = static_cast<NmeaDecoder*>(context);
+    if (decoder != NULL && !header.msg.empty()) decoder->m_headerParsed = true;
 }
 
 bool NmeaDecoder::SendMsg(const std::string& msg)

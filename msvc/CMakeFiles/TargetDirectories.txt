@@ -1,6 +1,0 @@
-D:/Projects/C++/NMEA_DHF/msvc/CMakeFiles/test_nmea_decoder.dir
-D:/Projects/C++/NMEA_DHF/msvc/CMakeFiles/test_math.dir
-D:/Projects/C++/NMEA_DHF/msvc/CMakeFiles/dhf_nmea_decoder.dir
-D:/Projects/C++/NMEA_DHF/msvc/CMakeFiles/RUN_TESTS.dir
-D:/Projects/C++/NMEA_DHF/msvc/CMakeFiles/ALL_BUILD.dir
-D:/Projects/C++/NMEA_DHF/msvc/CMakeFiles/ZERO_CHECK.dir

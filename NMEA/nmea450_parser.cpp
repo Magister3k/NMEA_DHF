@@ -1,122 +1,113 @@
 #include "nmea450_parser.h"
+
+#include <cstdlib>
 #include <cstring>
-#include <sstream>
 
-void Nmea450Parser::SetOnMsgAssembled(MsgAssembledCallback cb) { m_assembled_cb = cb; }
+Nmea450Parser::Nmea450Parser()
+    : m_assembledCallback(0), m_callbackContext(0)
+{
+}
 
-void Nmea450Parser::ProcPacket(const uint8_t* payload, size_t len) {
-    if (len < 8) return;
+void Nmea450Parser::SetOnMsgAssembled(MsgAssembledCallback callback, void* context)
+{
+    m_assembledCallback = callback;
+    m_callbackContext = context;
+}
 
-    // 1. "UdPbC\0"
-    if (std::memcmp(payload, "UdPbC\0", 6) != 0) {
-        return; // 
+void Nmea450Parser::ProcPacket(const unsigned char* payload, unsigned long length)
+{
+    std::string packet;
+    std::string::size_type closeTag;
+
+    if (payload == 0 || length < 8 || std::memcmp(payload, "UdPbC\0", 6) != 0) return;
+    packet.assign(reinterpret_cast<const char*>(payload + 6), length - 6);
+    if (packet.empty() || packet[0] != '\\') return;
+
+    closeTag = packet.find('\\', 1);
+    if (closeTag == std::string::npos) return;
+
+    std::string message = packet.substr(closeTag + 1);
+    while (!message.empty() && (message[message.length() - 1] == '\r' ||
+                                message[message.length() - 1] == '\n')) {
+        message.erase(message.length() - 1);
+    }
+    HandleTagBlock(packet.substr(1, closeTag - 1), message);
+}
+
+void Nmea450Parser::HandleTagBlock(const std::string& tagBlock, const std::string& nmeaMessage)
+{
+    const std::string::size_type star = tagBlock.find('*');
+    std::vector<std::string> tags;
+    std::vector<std::string> groupParts;
+    std::string source;
+    std::string groupTag;
+    std::string groupId;
+    std::string complete;
+    std::string::size_type firstComma;
+    std::string::size_type messageStar;
+    int currentLine;
+    int line;
+    int totalLines;
+    std::vector<std::string>::size_type i;
+
+    if (star == std::string::npos) return;
+    tags = SplitStr(tagBlock.substr(0, star), ',');
+    for (i = 0; i < tags.size(); ++i) {
+        if (tags[i].compare(0, 2, "s:") == 0) source = tags[i].substr(2);
+        else if (tags[i].compare(0, 2, "g:") == 0) groupTag = tags[i].substr(2);
     }
 
-    std::string payload_str(reinterpret_cast<const char*>(payload + 6), len - 6);
-    
-    // 2. 
-    if (!payload_str.empty() && payload_str[0] == '\\') {
-        size_t close_tag = payload_str.find('\\', 1);
-        if (close_tag != std::string::npos) {
-            std::string tag_block = payload_str.substr(1, close_tag - 1);
-            std::string nmea_msg = payload_str.substr(close_tag + 1);
-            
-            // 
-            while(!nmea_msg.empty() && (nmea_msg.back() == '\n' || nmea_msg.back() == '\r')) {
-                nmea_msg.pop_back();
-            }
+    if (groupTag.empty()) {
+        if (m_assembledCallback != 0) m_assembledCallback(m_callbackContext, nmeaMessage, source);
+        return;
+    }
 
-            HandleTagBlock(tag_block, nmea_msg);
+    groupParts = SplitStr(groupTag, '-');
+    if (groupParts.size() != 3) return;
+    currentLine = std::atoi(groupParts[0].c_str());
+    totalLines = std::atoi(groupParts[1].c_str());
+    if (currentLine < 1 || totalLines < 1 || currentLine > totalLines) return;
+
+    groupId = source + "_" + groupParts[2];
+    NmeaGroupAssembly& group = m_groupPool[groupId];
+    group.lastUpdate = std::time(0);
+    group.totalLines = totalLines;
+    group.lines[currentLine] = nmeaMessage;
+    if (group.lines.size() != static_cast<std::map<int, std::string>::size_type>(totalLines)) return;
+
+    for (line = 1; line <= totalLines; ++line) {
+        if (group.lines.find(line) == group.lines.end()) return;
+        if (line == 1) complete = group.lines[line];
+        else {
+            firstComma = group.lines[line].find(',');
+            messageStar = group.lines[line].find('*');
+            if (firstComma == std::string::npos || messageStar == std::string::npos || messageStar <= firstComma) return;
+            complete.insert(complete.find('*'), group.lines[line].substr(firstComma, messageStar - firstComma));
         }
+    }
+    m_groupPool.erase(groupId);
+    if (m_assembledCallback != 0) m_assembledCallback(m_callbackContext, complete, source);
+}
+
+void Nmea450Parser::CleanupTimeouts()
+{
+    const time_t now = std::time(0);
+    std::map<std::string, NmeaGroupAssembly>::iterator it = m_groupPool.begin();
+    while (it != m_groupPool.end()) {
+        if (now - it->second.lastUpdate > 3) m_groupPool.erase(it++);
+        else ++it;
     }
 }
 
-void Nmea450Parser::HandleTagBlock(const std::string& tag_block, const std::string& nmea_msg) {
-    size_t star_pos = tag_block.find('*');
-    if (star_pos == std::string::npos) return;
-
-    // 
-    std::string tags_data = tag_block.substr(0, star_pos);
-    std::vector<std::string> tags = SplitStr(tags_data, ',');
-
-    std::string src = "";
-    std::string group_tag = "";
-
-    // 
-    for (const auto& tag : tags) {
-        if (tag.rfind("s:", 0) == 0) {       // (Source)
-            src = tag.substr(2);
-        } else if (tag.rfind("g:", 0) == 0) { // 
-            group_tag = tag.substr(2);
-        }
-    }
-
-    // 
-    if (group_tag.empty()) {
-        if (m_assembled_cb) {
-            m_assembled_cb(nmea_msg, src);
-        }
-    } 
-    // (AIS 5)
-    else {
-        // g: [_]-[_]-[id_] (: 1-2-5678)
-        std::vector<std::string> g_parts = SplitStr(group_tag, '-');
-        if (g_parts.size() != 3) return;
-
-        int cur_line = std::stoi(g_parts[0]);
-        int total_lines = std::stoi(g_parts[1]);
-        std::string internal_group_id = src + "_" + g_parts[2]; // 
-
-        auto& group = m_nmea_group_pool[internal_group_id];
-        group.timestamp = std::chrono::steady_clock::now();
-        group.total_lines = total_lines;
-        group.lines[cur_line] = nmea_msg;
-
-        // 
-        if (group.lines.size() == static_cast<size_t>(group.total_lines)) {
-            std::string fully_assembled_msg = "";
-            
-            for (int i = 1; i <= group.total_lines; ++i) {
-                std::string part = group.lines[i];
-                if (i == 1) {
-                    fully_assembled_msg = part; // (!  $)
-                } else {
-                    // ('*')
-                    size_t first_comma = part.find(',');
-                    size_t star = part.find('*');
-                    if (first_comma != std::string::npos && star != std::string::npos && star > first_comma) {
-                        fully_assembled_msg.insert(fully_assembled_msg.find('*'), part.substr(first_comma, star - first_comma));
-                    }
-                }
-            }
-            
-            m_nmea_group_pool.erase(internal_group_id); // 
-
-            if (m_assembled_cb) {
-                m_assembled_cb(fully_assembled_msg, src);
-            }
-        }
-    }
-}
-
-void Nmea450Parser::CleanupTimeouts() {
-    auto now = std::chrono::steady_clock::now();
-    // 
-    for (auto it = m_nmea_group_pool.begin(); it != m_nmea_group_pool.end();) {
-        if (now - it->second.timestamp > std::chrono::seconds(3)) {
-            it = m_nmea_group_pool.erase(it);
-        } else {
-            ++it;
-        }
-    }
-}
-
-std::vector<std::string> Nmea450Parser::SplitStr(const std::string& str, char delimiter) const {
-    std::vector<std::string> tokens;
-    std::string token;
-    std::istringstream tokenStream(str);
-    while (std::getline(tokenStream, token, delimiter)) {
-        tokens.push_back(token);
-    }
-    return tokens;
+std::vector<std::string> Nmea450Parser::SplitStr(const std::string& value, char delimiter) const
+{
+    std::vector<std::string> result;
+    std::string::size_type start = 0;
+    std::string::size_type end;
+    do {
+        end = value.find(delimiter, start);
+        result.push_back(value.substr(start, end == std::string::npos ? end : end - start));
+        start = end + 1;
+    } while (end != std::string::npos);
+    return result;
 }

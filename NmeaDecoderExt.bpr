@@ -1,0 +1,49 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!-- Borland C++Builder 6 DLL project. Open this file in the IDE and build. -->
+<PROJECT>
+  <MACROS>
+    <VERSION value="BCB.06.00"/>
+    <PROJECT value="NmeaDecoderExt.dll"/>
+    <OBJFILES value="nmea_decoder.obj NMEA\nmea0183_parser.obj NMEA\nmea450_parser.obj"/>
+    <RESFILES value=""/>
+    <IDLFILES value=""/>
+    <IDLGENFILES value=""/>
+    <DEFFILE value=""/>
+    <RESDEPEN value=""/>
+    <LIBFILES value=""/>
+    <LIBRARIES value=""/>
+    <SPARELIBS value="rtl.lib"/>
+    <PACKAGES value=""/>
+    <PATHCPP value=".;NMEA;DHF\_example\include"/>
+    <PATHPAS value="."/>
+    <PATHRC value="."/>
+    <PATHASM value="."/>
+    <DEBUGLIBPATH value="$(BCB)\lib\debug"/>
+    <RELEASELIBPATH value="$(BCB)\lib\release"/>
+    <LINKER value="ilink32"/>
+    <USERDEFINES value=""/>
+    <SYSDEFINES value="NO_STRICT;_RTLDLL"/>
+    <MAINSOURCE value=""/>
+    <INCLUDEPATH value=".;NMEA;DHF\_example\include;$(BCB)\include"/>
+    <LIBPATH value="$(BCB)\lib\obj;$(BCB)\lib"/>
+    <WARNINGS value="-w-par"/>
+    <OTHERFILES value=""/>
+  </MACROS>
+  <OPTIONS>
+    <CFLAG1 value="-WD -O2 -Vx -Ve -X- -r- -a8 -b- -k -tWD -tWM -c"/>
+    <PFLAGS value="-$YD -$W -$O+ -$A8 -JPHNE -M"/>
+    <RFLAGS value=""/>
+    <AFLAGS value="/mx /w2"/>
+    <LFLAGS value="-D&quot;&quot; -aa -Tpd -x"/>
+  </OPTIONS>
+  <LINKER>
+    <ALLOBJ value="c0d32.obj Memmgr.Lib sysinit.obj $(OBJFILES)"/>
+    <ALLRES value="$(RESFILES)"/>
+    <ALLLIB value="$(LIBFILES) $(LIBRARIES) import32.lib cp32mti.lib"/>
+  </LINKER>
+  <FILELIST>
+    <FILE FILENAME="nmea_decoder.cpp" FORMNAME="" UNITNAME="nmea_decoder" CONTAINERID="CCompiler" LOCALCOMMAND=""/>
+    <FILE FILENAME="NMEA\nmea0183_parser.cpp" FORMNAME="" UNITNAME="nmea0183_parser" CONTAINERID="CCompiler" LOCALCOMMAND=""/>
+    <FILE FILENAME="NMEA\nmea450_parser.cpp" FORMNAME="" UNITNAME="nmea450_parser" CONTAINERID="CCompiler" LOCALCOMMAND=""/>
+  </FILELIST>
+</PROJECT>
