@@ -1,0 +1,10 @@
+# Generated build trees and compiler output.
+build/
+mingw/
+msvc/
+*.obj
+*.tds
+*.dll
+*.lib
+*.exp
+*.pdb

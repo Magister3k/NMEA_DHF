@@ -1,50 +1,36 @@
-#pragma once
+#ifndef NMEA450_PARSER_H
+#define NMEA450_PARSER_H
 
+#include <map>
 #include <string>
 #include <vector>
-#include <map>
-#include <functional>
-#include <chrono>
+#include <ctime>
 
-// ��������� ��� Sentence Grouping (������������� ��������� NMEA-450)
 struct NmeaGroupAssembly {
-    int total_lines = 0;
-    std::chrono::steady_clock::time_point timestamp;
-    std::map<int, std::string> lines; // ����� ������ -> ���� NMEA
+    int totalLines;
+    time_t lastUpdate;
+    std::map<int, std::string> lines;
+
+    NmeaGroupAssembly() : totalLines(0), lastUpdate(0) {}
 };
 
 class Nmea450Parser {
 public:
-    // ������� ��� �������� ���������� ������ � ��������� ������ (nmea0183_parser)
-    using MsgAssembledCallback = std::function<void(const std::string& clean_msg, const std::string& src)>;
+    typedef void (*MsgAssembledCallback)(void* context, const std::string& message,
+                                         const std::string& source);
 
-    Nmea450Parser() = default;
-    ~Nmea450Parser() = default;
-
-    // ������ �����������
-    Nmea450Parser(const Nmea450Parser&) = delete;
-    Nmea450Parser& operator=(const Nmea450Parser&) = delete;
-
-    // ����������� �������
-    void SetOnMsgAssembled(MsgAssembledCallback cb);
-
-    /**
-     * @brief ��������� ����� ������, ����������� �� ������������� ������.
-     * @param payload ��������� �� ������ �������� ��������
-     * @param len ������ �������� ��������
-     */
-    void ProcPacket(const uint8_t* payload, size_t len);
-
-    /**
-     * @brief ����� ������� ������������� ������������� ������� �� ��������.
-    *        ���������� ������� ������������� (garbage_collection_service).
-     */
+    Nmea450Parser();
+    void SetOnMsgAssembled(MsgAssembledCallback callback, void* context);
+    void ProcPacket(const unsigned char* payload, unsigned long length);
     void CleanupTimeouts();
 
 private:
-    void HandleTagBlock(const std::string& tag_block, const std::string& nmea_msg);
-    std::vector<std::string> SplitStr(const std::string& str, char delimiter) const;
+    void HandleTagBlock(const std::string& tagBlock, const std::string& nmeaMessage);
+    std::vector<std::string> SplitStr(const std::string& value, char delimiter) const;
 
-    MsgAssembledCallback m_assembled_cb = nullptr;
-    std::map<std::string, NmeaGroupAssembly> m_nmea_group_pool;
+    MsgAssembledCallback m_assembledCallback;
+    void* m_callbackContext;
+    std::map<std::string, NmeaGroupAssembly> m_groupPool;
 };
+
+#endif

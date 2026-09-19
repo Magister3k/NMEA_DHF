@@ -1,3 +1,0 @@
-D:\Programs\cmake\bin\cmake.exe -E rm -f CMakeFiles\test_math.dir/objects.a
-D:\Programs\MinGW\mingw32\bin\ar.exe qc CMakeFiles\test_math.dir/objects.a @CMakeFiles\test_math.dir\objects1.rsp
-D:\Programs\MinGW\mingw32\bin\c++.exe -O3 -DNDEBUG -Wl,--whole-archive CMakeFiles\test_math.dir/objects.a -Wl,--no-whole-archive -o D:\Projects\C++\NMEA_DHF\build\mingw\release\test_math.exe -Wl,--out-implib,D:\Projects\C++\NMEA_DHF\build\mingw\archive\libtest_math.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\test_math.dir\linkLibs.rsp
