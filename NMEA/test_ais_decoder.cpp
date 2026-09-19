@@ -19,7 +19,7 @@ int main() {
         std::cout << "   �������� (SOG): " << report.sog << " �����" << std::endl;
         
         // ����������� ������ ����������� ��������� ������
-        if (report.mmsi == 244670000) {
+        if (report.mmsi == 802534) {
             pos_test_passed = true;
         }
     });
@@ -29,7 +29,7 @@ int main() {
         std::cout << "-> �������� ����������� ������ ����� (��� " << report.msg_type << ")" << std::endl;
         std::cout << "   ��������: " << report.ship_name << " | ��������: " << report.call_sign << std::endl;
         std::cout << "   IMO �����: " << report.imo_num << std::endl;
-        std::cout << "   ����������: " << report.dest << std::endl;
+        std::cout << "   ����������: " << report.dest_port << std::endl;
 
         if (report.mmsi == 244670321) {
             static_test_passed = true;

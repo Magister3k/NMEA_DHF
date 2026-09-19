@@ -5,12 +5,14 @@
 #include <functional>
 #include <cstdint>
 #include "ais_structures.h"
+#include "nmea_structures.h"
 
 class AisDecoder {
 public:
     // ��������� �������� ��� �������� ������-������ (������� �����������)
     using PosCallback = std::function<void(const AisPosReport&)>;
     using DataCallback = std::function<void(const AisDataReport&)>;
+    using NmeaReportCallback = std::function<void(const NmeaReport&)>;
 
     AisDecoder() = default;
     ~AisDecoder() = default;
@@ -22,6 +24,7 @@ public:
     // ������ ����������� ������������ �������
     void SetOnPosReport(PosCallback cb);
     void SetOnDataReport(DataCallback cb);
+    void SetOnNmeaReport(NmeaReportCallback cb);
 
     /**
      * @brief ������� ����� �����. ���������� ������ ������ ����������������� �������� �������� AIS.
@@ -41,4 +44,7 @@ private:
     // ������������������ ���������������� �������
     PosCallback m_pos_cb = nullptr;
     DataCallback m_data_cb = nullptr;
+    NmeaReportCallback m_nmea_cb = nullptr;
+    void EmitNmeaReport(const AisPosReport& report);
+    void EmitNmeaReport(const AisDataReport& report);
 };
