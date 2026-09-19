@@ -88,11 +88,11 @@ void RunGeodeticTests() {
         NmeaReport report;
         ConvertUtmToWgs84(tc.expected_easting, tc.expected_northing, tc.expected_zone, tc.expected_hemisphere, report);
 
-        std::cout << "  [Обратный ход] Ожидаемая Широта: " << tc.expected_lat << " | Полученная: " << report.latitude << std::endl;
-        std::cout << "  [Обратный ход] Ожидаемая Долгота: " << tc.expected_lon << " | Полученная: " << report.longitude << std::endl;
+        std::cout << "  [Обратный ход] Ожидаемая Широта: " << tc.expected_lat << " | Полученная: " << report.lat << std::endl;
+        std::cout << "  [Обратный ход] Ожидаемая Долгота: " << tc.expected_lon << " | Полученная: " << report.lon << std::endl;
 
-        bool inverse_ok = IsClose(report.latitude, tc.expected_lat, GEO_EPSILON) &&
-                          IsClose(report.longitude, tc.expected_lon, GEO_EPSILON);
+        bool inverse_ok = IsClose(report.lat, tc.expected_lat, GEO_EPSILON) &&
+                          IsClose(report.lon, tc.expected_lon, GEO_EPSILON);
 
         if (inverse_ok) {
             std::cout << "  ✅ УСПЕХ: Векторная пара градусы-метры сошлась с точностью до сантиметра." << std::endl;

@@ -121,6 +121,7 @@ if(WIN32)
     )
     target_compile_features(dhf_nmea_decoder PRIVATE cxx_std_17)
     target_compile_definitions(dhf_nmea_decoder PRIVATE dhf_nmea_decoder_BUILD)
+    target_link_libraries(dhf_nmea_decoder PRIVATE comctl32)
     set_target_properties(dhf_nmea_decoder PROPERTIES
         OUTPUT_NAME "nmea_decoder"
         RUNTIME_OUTPUT_DIRECTORY "${NMEA_RELEASE_DIR}"
