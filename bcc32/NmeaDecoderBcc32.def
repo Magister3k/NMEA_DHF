@@ -1,0 +1,4 @@
+LIBRARY nmea_decoder
+EXPORTS
+    getIModuleExt
+    removeIModuleExt
